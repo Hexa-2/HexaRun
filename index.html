@@ -99,6 +99,7 @@ canvas{display:block;}
   align-items:center;justify-content:center;
   background:rgba(0,0,10,0.85);pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:5;}
 #screen.show{opacity:1;pointer-events:none;}
+#screen.show .scr-btn, #screen.show button{pointer-events:all;}
 #screen h1{font-size:48px;font-weight:900;color:#ff0055;text-shadow:0 0 20px #ff0055;margin-bottom:10px;}
 .scr-sub{font-size:14px;color:#aaa;letter-spacing:1px;margin-bottom:20px;}
 .scr-best{font-size:16px;color:#ffd700;margin-bottom:30px;text-shadow:0 0 10px rgba(255,215,0,0.5);}
@@ -305,6 +306,64 @@ canvas{display:block;}
 @keyframes tready-pop{0%{transform:scale(0.7) rotate(-6deg);opacity:0;}60%{transform:scale(1.1) rotate(2deg);opacity:1;}100%{transform:scale(1) rotate(0);opacity:1;}}
 #train-complete-anim{animation:tready-pop 0.45s cubic-bezier(.2,1.4,.4,1);}
 
+/* ── LEVEL EDITOR ── */
+#editor-ov.ov{padding:0;align-items:stretch;}
+.ed-shell{display:flex;width:100%;height:100%;}
+.ed-side{width:230px;flex-shrink:0;background:rgba(0,8,20,0.92);border-right:2px solid rgba(0,240,255,0.25);
+  display:flex;flex-direction:column;padding:16px 14px;overflow-y:auto;}
+.ed-side-title{font-size:13px;font-weight:900;letter-spacing:2px;color:#00f0ff;text-transform:uppercase;
+  text-shadow:0 0 10px #00f0ff;margin-bottom:2px;}
+.ed-side-hint{font-size:9.5px;color:#789;letter-spacing:0.3px;line-height:1.5em;margin-bottom:14px;}
+.ed-section-lbl{font-size:9px;font-weight:900;letter-spacing:1.5px;color:#789;text-transform:uppercase;
+  margin:10px 0 6px;padding-top:10px;border-top:1px solid rgba(0,240,255,0.12);}
+.ed-section-lbl:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.ed-block-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ed-block{background:rgba(0,16,36,0.6);border:2px solid rgba(0,240,255,0.18);padding:8px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;cursor:grab;
+  transition:border-color 0.12s,transform 0.1s,background 0.12s;user-select:none;}
+.ed-block:hover{border-color:rgba(0,240,255,0.55);transform:translateY(-1px);}
+.ed-block.active{border-color:#00f0ff;background:rgba(0,240,255,0.12);box-shadow:0 0 12px rgba(0,240,255,0.25);}
+.ed-block canvas{display:block;pointer-events:none;}
+.ed-block-lbl{font-size:8.5px;font-weight:900;letter-spacing:0.5px;color:#ddd;text-transform:uppercase;
+  text-align:center;pointer-events:none;}
+.ed-eraser{margin-top:4px;background:rgba(255,0,60,0.08);border:2px solid rgba(255,0,60,0.3);
+  padding:9px 6px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all 0.12s;}
+.ed-eraser:hover{border-color:rgba(255,0,60,0.6);}
+.ed-eraser.active{border-color:#ff0033;background:rgba(255,0,60,0.18);box-shadow:0 0 12px rgba(255,0,60,0.25);}
+.ed-eraser-lbl{font-size:9.5px;font-weight:900;letter-spacing:1px;color:#ff5577;text-transform:uppercase;}
+.ed-main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.ed-topbar{display:flex;align-items:center;gap:10px;padding:12px 18px;background:rgba(0,5,16,0.85);
+  border-bottom:2px solid rgba(0,240,255,0.18);flex-shrink:0;}
+.ed-topbar .ov-title{margin:0;font-size:17px;}
+.ed-name-input{background:rgba(0,20,40,0.6);border:2px solid #0072ff;color:#fff;padding:7px 10px;
+  outline:none;font-weight:700;font-size:12px;width:170px;font-family:inherit;}
+.ed-spacer{flex:1;}
+.ed-topbtn{font-family:inherit;font-weight:900;letter-spacing:0.7px;text-transform:uppercase;
+  cursor:pointer;border:none;padding:9px 16px;font-size:11px;color:#fff;
+  background:linear-gradient(to bottom,#00f0ff,#0072ff);box-shadow:0 4px 0 #004488;transition:transform 0.1s;}
+.ed-topbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #004488;}
+.ed-topbtn.ed-preview{background:linear-gradient(to bottom,#00ff88,#00aa44);box-shadow:0 4px 0 #005522;}
+.ed-topbtn.ed-save{background:linear-gradient(to bottom,#ffb000,#aa6600);box-shadow:0 4px 0 #663d00;}
+.ed-topbtn.ed-clear{background:linear-gradient(to bottom,#ff3355,#aa0022);box-shadow:0 4px 0 #660011;}
+.ed-topbtn.ed-back{background:linear-gradient(to bottom,#445,#223);box-shadow:0 4px 0 #112;}
+.ed-canvas-wrap{flex:1;position:relative;overflow:hidden;background:#020208;}
+#ed-canvas{display:block;cursor:cell;width:1050px;height:600px;}
+.ed-scrollbar{height:14px;flex-shrink:0;background:rgba(0,8,20,0.9);border-top:1px solid rgba(0,240,255,0.15);
+  position:relative;cursor:pointer;}
+.ed-scrollbar-thumb{position:absolute;top:2px;height:10px;background:rgba(0,240,255,0.35);border-radius:5px;
+  transition:background 0.12s;}
+.ed-scrollbar-thumb:hover{background:rgba(0,240,255,0.55);}
+.ed-statusbar{display:flex;align-items:center;gap:18px;padding:8px 18px;background:rgba(0,5,16,0.85);
+  border-top:2px solid rgba(0,240,255,0.18);flex-shrink:0;font-size:10px;color:#789;letter-spacing:0.5px;}
+.ed-statusbar b{color:#00f0ff;}
+.ed-msg{font-size:10.5px;letter-spacing:0.5px;min-height:14px;}
+
+/* ── EDITOR: Save/Load list overlay ── */
+.ed-list-row{display:flex;align-items:center;gap:8px;background:rgba(0,16,36,0.55);
+  border:1px solid rgba(0,240,255,0.18);padding:9px 12px;}
+.ed-list-name{flex:1;font-size:11px;font-weight:900;color:#fff;letter-spacing:0.5px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ed-list-meta{font-size:9px;color:#789;letter-spacing:0.3px;margin-right:4px;}
 
 </style>
 <!-- Firebase (compat build — works directly in a plain HTML file, no bundler needed) -->
@@ -341,6 +400,20 @@ canvas{display:block;}
   background:rgba(0,5,20,0.7);border:2px solid rgba(0,255,136,0.4);padding:10px 14px;min-width:170px;">
   <div style="font-size:9px;letter-spacing:2px;color:#00ff88;text-transform:uppercase;margin-bottom:6px;">Room <span id="mp-hud-code"></span></div>
   <div id="mp-hud-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+</div>
+
+<!-- Custom Mode in-race HUD: lives + countdown timer -->
+<div id="custom-hud" style="display:none;position:absolute;top:90px;right:20px;z-index:1;
+  background:rgba(0,5,20,0.7);border:2px solid rgba(255,176,0,0.4);padding:10px 14px;min-width:120px;
+  flex-direction:column;gap:8px;pointer-events:none;">
+  <div id="ch-lives-wrap" style="display:none;align-items:center;gap:6px;">
+    <span style="font-size:9px;letter-spacing:1px;color:#ffb000;text-transform:uppercase;">Lives</span>
+    <span id="ch-lives" style="font-size:14px;letter-spacing:2px;color:#ff5577;">♥</span>
+  </div>
+  <div id="ch-time-wrap" style="display:none;align-items:center;gap:6px;">
+    <span style="font-size:9px;letter-spacing:1px;color:#ffb000;text-transform:uppercase;">Time</span>
+    <span id="ch-time" style="font-size:16px;font-weight:900;color:#00f0ff;">0:00</span>
+  </div>
 </div>
 
 <!-- Race start countdown -->
@@ -479,9 +552,6 @@ canvas{display:block;}
     <button class="gd-btn" onclick="trainStart()" style="background: linear-gradient(to bottom, #ffe338, #d4a700); box-shadow: 0 6px 0 #8a6b00, 0 0 15px rgba(255,211,56,0.35); color:#1a1300;">
       <div class="gd-icon-box"><canvas id="icon-train" width="24" height="24"></canvas></div><div class="gd-label">Practice Mode</div>
     </button>
-    <button class="gd-btn" onclick="menuUpdateLog()">
-      <div class="gd-icon-box"><canvas id="icon-log" width="24" height="24"></canvas></div><div class="gd-label">Update Log</div>
-    </button>
   </div>
 
   <!-- Right buttons -->
@@ -497,6 +567,12 @@ canvas{display:block;}
     </button>
     <button class="gd-btn" onclick="menuPartyMode()" style="background: linear-gradient(to bottom, #00ff88, #00aa44); box-shadow: 0 6px 0 #005522, 0 0 15px rgba(0,255,136,0.3);">
       <div class="gd-icon-box"><canvas id="icon-party" width="24" height="24"></canvas></div><div class="gd-label">Party Mode</div>
+    </button>
+    <button class="gd-btn" onclick="menuCustomMode()" style="background: linear-gradient(to bottom, #ffb000, #aa6600); box-shadow: 0 6px 0 #663d00, 0 0 15px rgba(255,176,0,0.3);">
+      <div class="gd-icon-box"><canvas id="icon-custommode" width="24" height="24"></canvas></div><div class="gd-label">Custom Mode</div>
+    </button>
+    <button class="gd-btn" onclick="editorOpen()" style="background: linear-gradient(to bottom, #00ff88, #00aa44); box-shadow: 0 6px 0 #005522, 0 0 15px rgba(0,255,136,0.3);">
+      <div class="gd-icon-box"><canvas id="icon-editor" width="24" height="24"></canvas></div><div class="gd-label">Level Editor</div>
     </button>
   </div>
 
@@ -755,6 +831,177 @@ canvas{display:block;}
   <button class="ov-back" onclick="hideOv('party-ov')" style="margin-top:10px;">← Back</button>
 </div>
 
+<!-- Custom Game Mode settings overlay -->
+<div class="ov" id="custom-ov">
+  <div class="cosm-header">
+    <div class="ov-title" style="margin-bottom:4px;">Custom Mode</div>
+    <div class="cosm-sub">Modify Rules · Save Presets · Share Codes</div>
+  </div>
+
+  <div class="cust-body" style="max-width:760px;">
+    <div class="cosm-panel" style="min-width:280px;">
+      <div class="cosm-panel-title"><span class="cosm-dot" style="background:#ffb000;"></span>Match Rules</div>
+      <div class="cosm-card" style="gap:14px;">
+
+        <div class="sl-row" style="justify-content:space-between;">
+          <div class="cust-lbl" style="margin-bottom:0;min-width:110px;">Speed Multiplier</div>
+          <input type="range" id="cm-speed" min="0.5" max="2.0" step="0.05" value="1" oninput="cmOnChange()">
+          <div class="sl-val" id="cm-speed-val" style="min-width:42px;">1.00x</div>
+        </div>
+
+        <div class="sl-row" style="justify-content:space-between;">
+          <div class="cust-lbl" style="margin-bottom:0;min-width:110px;">Gravity Control</div>
+          <input type="range" id="cm-gravity" min="0.5" max="2.0" step="0.05" value="1" oninput="cmOnChange()">
+          <div class="sl-val" id="cm-gravity-val" style="min-width:42px;">1.00x</div>
+        </div>
+
+        <div class="sl-row" style="justify-content:space-between;">
+          <div class="cust-lbl" style="margin-bottom:0;min-width:110px;">Number of Lives</div>
+          <input type="range" id="cm-lives" min="1" max="9" step="1" value="1" oninput="cmOnChange()">
+          <div class="sl-val" id="cm-lives-val" style="min-width:42px;">1</div>
+        </div>
+
+        <label class="tog-row">
+          <input type="checkbox" id="cm-coins" checked onchange="cmOnChange()">
+          <span>Coins Enabled</span>
+        </label>
+
+        <label class="tog-row">
+          <input type="checkbox" id="cm-timer" onchange="cmOnChange()">
+          <span>Timer On</span>
+        </label>
+
+        <div class="sl-row" id="cm-timersecs-row" style="justify-content:space-between;display:none;">
+          <div class="cust-lbl" style="margin-bottom:0;min-width:110px;">Match Length</div>
+          <input type="range" id="cm-timersecs" min="10" max="300" step="5" value="60" oninput="cmOnChange()">
+          <div class="sl-val" id="cm-timersecs-val" style="min-width:42px;">60s</div>
+        </div>
+
+        <label class="tog-row">
+          <input type="checkbox" id="cm-random" onchange="cmOnChange()">
+          <span>Random Obstacles</span>
+        </label>
+
+        <label class="tog-row">
+          <input type="checkbox" id="cm-ghost" onchange="cmOnChange()">
+          <span>Ghost Mode (no death)</span>
+        </label>
+
+      </div>
+      <button class="ov-back" style="align-self:flex-start;" onclick="cmResetDefaults()">↺ Reset to Default</button>
+    </div>
+
+    <div class="cosm-panel" style="min-width:260px;">
+      <div class="cosm-panel-title"><span class="cosm-dot" style="background:#00f0ff;"></span>Share Code</div>
+      <div class="cosm-card" style="gap:10px;">
+        <div class="cust-lbl">Your Settings Code</div>
+        <div style="display:flex;gap:8px;">
+          <input id="cm-share-code" readonly style="flex:1;background:rgba(0,20,40,0.6);border:2px solid #0072ff;
+            color:#00f0ff;padding:8px;outline:none;font-weight:900;letter-spacing:0.5px;font-size:11px;">
+          <button class="scr-btn" style="padding:8px 14px;font-size:10px;min-width:0;" onclick="cmCopyShareCode()">Copy</button>
+        </div>
+        <div class="cust-lbl" style="margin-top:6px;">Import a Code</div>
+        <div style="display:flex;gap:8px;">
+          <input id="cm-import-code" placeholder="Paste code" style="flex:1;background:rgba(0,20,40,0.6);border:2px solid #0072ff;
+            color:#fff;padding:8px;outline:none;font-weight:700;font-size:11px;">
+          <button class="scr-btn" style="padding:8px 14px;font-size:10px;min-width:0;" onclick="cmImportShareCode()">Load</button>
+        </div>
+        <div id="cm-msg" style="font-size:11px;min-height:14px;letter-spacing:0.5px;"></div>
+      </div>
+
+      <div class="cosm-panel-title" style="margin-top:10px;"><span class="cosm-dot" style="background:#ff00aa;"></span>Presets</div>
+      <div class="cosm-card" style="gap:10px;">
+        <div style="display:flex;gap:8px;">
+          <input id="cm-preset-name" placeholder="Preset name" maxlength="20" style="flex:1;background:rgba(0,20,40,0.6);border:2px solid #0072ff;
+            color:#fff;padding:8px;outline:none;font-weight:700;font-size:11px;">
+          <button class="scr-btn" style="padding:8px 14px;font-size:10px;min-width:0;" onclick="cmSavePreset()">Save</button>
+        </div>
+        <div id="cm-preset-list" style="display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="mm-play-btn" style="width:220px;height:56px;font-size:20px;margin-top:22px;" onclick="startCustomGame()">START</button>
+  <button class="ov-back" onclick="hideOv('custom-ov')" style="margin-top:8px;">← Back</button>
+</div>
+
+<!-- Level Editor overlay -->
+<div class="ov" id="editor-ov">
+  <div class="ed-shell">
+
+    <!-- Block palette / instructions side panel -->
+    <div class="ed-side">
+      <div class="ed-side-title">Block Menu</div>
+      <div class="ed-side-hint">Pick a block below, then click the grid to place it. To move a placed block, select its same type again and click it, then click where it should go. Use the eraser to delete. Drag the strip below the grid, or scroll, to move along the level.</div>
+
+      <div class="ed-section-lbl">Ground &amp; Blocks</div>
+      <div class="ed-block-grid" id="ed-palette-blocks"></div>
+
+      <div class="ed-section-lbl">Hazards</div>
+      <div class="ed-block-grid" id="ed-palette-hazards"></div>
+
+      <div class="ed-section-lbl">Pickups &amp; Movers</div>
+      <div class="ed-block-grid" id="ed-palette-pickups"></div>
+
+      <div class="ed-eraser" id="ed-eraser-btn" onclick="editorSelectTool('eraser')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff5577" stroke-width="2.2"><path d="M16 3 21 8 9 20H4v-5z"/><path d="M14.5 6.5 17.5 9.5"/></svg>
+        <span class="ed-eraser-lbl">Eraser</span>
+      </div>
+    </div>
+
+    <!-- Main editing area -->
+    <div class="ed-main">
+      <div class="ed-topbar">
+        <div class="ov-title">Level Editor</div>
+        <input id="ed-name-input" class="ed-name-input" maxlength="22" placeholder="Untitled Level">
+        <div class="ed-spacer"></div>
+        <button class="ed-topbtn" onclick="editorLoadMenu()">Load</button>
+        <button class="ed-topbtn ed-save" onclick="editorSaveLevel()">Save</button>
+        <button class="ed-topbtn ed-preview" onclick="editorPreview()">Preview</button>
+        <button class="ed-topbtn ed-clear" onclick="editorClearConfirm()">Clear</button>
+        <button class="ed-topbtn ed-back" onclick="editorExit()">← Menu</button>
+      </div>
+
+      <div class="ed-canvas-wrap" id="ed-canvas-wrap">
+        <canvas id="ed-canvas" width="1050" height="600"></canvas>
+      </div>
+
+      <div class="ed-scrollbar" id="ed-scrollbar">
+        <div class="ed-scrollbar-thumb" id="ed-scrollbar-thumb"></div>
+      </div>
+
+      <div class="ed-statusbar">
+        <div>Selected: <b id="ed-status-tool">Block</b></div>
+        <div>Objects placed: <b id="ed-status-count">0</b></div>
+        <div>Level length: <b id="ed-status-length">40</b> tiles</div>
+        <button class="ed-topbtn" style="padding:5px 10px;font-size:9px;" onclick="editorExtendLevel()">+ Extend 20 tiles</button>
+        <div class="ed-spacer"></div>
+        <div class="ed-msg" id="ed-msg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lives outside the editor overlay so it stays visible/clickable while the
+     overlay itself is hidden during an active preview run. -->
+<button class="ov-back" id="ed-preview-exit" style="position:absolute;top:14px;right:18px;display:none;z-index:25;" onclick="editorExitPreview()">← Back to Editor</button>
+
+<!-- Level Editor: Save / Load list overlay -->
+<div class="ov ov-center" id="editor-list-ov">
+  <div class="sq-card" style="aspect-ratio:auto;height:auto;max-height:80%;">
+    <div class="sq-card-header">
+      <div class="ov-title" id="ed-list-title" style="margin-bottom:0;">My Levels</div>
+    </div>
+    <div class="sq-card-body">
+      <div id="ed-list-rows" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div id="ed-list-empty" style="display:none;font-size:11px;color:#789;letter-spacing:0.5px;text-align:center;padding:20px 0;">
+        No saved levels yet. Build something in the editor, then hit Save.
+      </div>
+    </div>
+  </div>
+  <button class="ov-back" onclick="hideOv('editor-list-ov')" style="margin-top:14px;">← Back</button>
+</div>
+
 <!-- Multiplayer race results overlay -->
 <div id="party-results" class="overlay-box" style="z-index:8;">
   <div style="font-size:30px;font-weight:900;letter-spacing:1px;color:#00ff88;text-transform:uppercase;
@@ -961,6 +1208,21 @@ function drawIcon(id, type, color='#fff') {
         ctx.beginPath(); ctx.moveTo(w/2, h*0.04); ctx.lineTo(w/2, h*0.16); ctx.moveTo(w/2, h*0.84); ctx.lineTo(w/2, h*0.96);
         ctx.moveTo(w*0.04, h/2); ctx.lineTo(w*0.16, h/2); ctx.moveTo(w*0.84, h/2); ctx.lineTo(w*0.96, h/2);
         ctx.stroke();
+    } else if (type === 'sliders') {
+        // Three horizontal sliders — represents adjustable rule settings
+        [0.28,0.5,0.72].forEach((ry,i)=>{
+            const y=h*ry;
+            ctx.beginPath(); ctx.moveTo(w*0.12,y); ctx.lineTo(w*0.88,y); ctx.stroke();
+            const kx = i===0?w*0.65 : i===1?w*0.35 : w*0.55;
+            ctx.beginPath(); ctx.arc(kx,y,w*0.08,0,Math.PI*2); ctx.fill();
+        });
+    } else if (type === 'grid') {
+        // 2x2 block grid with one corner filled — represents placing blocks
+        ctx.lineWidth = 1.8;
+        ctx.strokeRect(w*0.12,h*0.12,w*0.34,h*0.34);
+        ctx.strokeRect(w*0.54,h*0.12,w*0.34,h*0.34);
+        ctx.strokeRect(w*0.12,h*0.54,w*0.34,h*0.34);
+        ctx.fillRect(w*0.54,h*0.54,w*0.34,h*0.34);
     }
 }
 
@@ -976,9 +1238,10 @@ window.onload = () => {
     drawIcon('icon-custom', 'custom', '#fff');
     drawIcon('icon-about', 'about', '#fff');
     drawIcon('icon-news', 'news', '#fff');
-    drawIcon('icon-log', 'log', '#fff');
     drawIcon('icon-settings', 'gear', '#fff');
     drawIcon('icon-party', 'party', '#fff');
+    drawIcon('icon-custommode', 'sliders', '#fff');
+    drawIcon('icon-editor', 'grid', '#fff');
     drawIcon('icon-train', 'train', '#1a1300');
     drawIcon('play-icon', 'play', '#fff');
 };
@@ -1006,6 +1269,63 @@ const P={
 let shake=0, combo=0, comboTimer=0, totalCoins=0;
 let hexaCoins=0; // spendable currency wallet — earned per run, spent in the Cosmetics shop
 let partyMode = false; // true while actively racing in a multiplayer room
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  CUSTOM GAME MODE — player-defined rule set, applied on top of core gameplay
+// ══════════════════════════════════════════════════════════════════════════════
+let customMode = false; // true while actively playing a Custom Mode match
+let editorPreviewMode = false; // true while playtesting a level from the Level Editor
+let editorPreviewLevelLenPx = 0; // pixel x of the level-end marker, for the "reached the end" check
+const CUSTOM_DEFAULTS = {
+  speedMult: 1.0,     // 0.5x – 2.0x world speed
+  gravityMult: 1.0,   // 0.5x – 2.0x gravity & jump force (scaled together so jump arcs stay playable)
+  lives: 1,           // 1 – 9, match ends when lives reach 0
+  coinsEnabled: true, // coins spawn / can be collected
+  timerOn: false,     // when true, match ends at timerSeconds regardless of lives
+  timerSeconds: 60,   // 10 – 300
+  randomObstacles: false, // when true, obstacle pattern picks ignore tier weighting and pick fully at random
+  ghostMode: false,   // when true, obstacles are visible but non-lethal (pass through, no death)
+};
+let CUSTOM = {...CUSTOM_DEFAULTS};
+let customLivesLeft = 1;
+let customTimeLeft = 0;     // ms remaining, counts down when timerOn
+let customDeaths = 0;
+let customMatchStartScore = 0;
+let customResultShown = false;
+const CUSTOM_PRESET_KEY = 'georun_custom_presets';
+
+function loadCustomPresets(){
+  try{ return JSON.parse(localStorage.getItem(CUSTOM_PRESET_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveCustomPresets(p){
+  try{ localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(p)); }catch(e){}
+}
+// Encode a settings object into a short shareable code (base64 of compact CSV).
+function encodeCustomCode(settings){
+  const compact = [
+    settings.speedMult, settings.gravityMult, settings.lives,
+    settings.coinsEnabled?1:0, settings.timerOn?1:0, settings.timerSeconds,
+    settings.randomObstacles?1:0, settings.ghostMode?1:0
+  ].join(',');
+  try{ return btoa(compact).replace(/=+$/,''); }catch(e){ return ''; }
+}
+function decodeCustomCode(code){
+  try{
+    const parts = atob(code).split(',').map(Number);
+    if(parts.length<8 || parts.some(n=>Number.isNaN(n))) return null;
+    return {
+      speedMult: clampNum(parts[0],0.5,2.0),
+      gravityMult: clampNum(parts[1],0.5,2.0),
+      lives: Math.round(clampNum(parts[2],1,9)),
+      coinsEnabled: !!parts[3],
+      timerOn: !!parts[4],
+      timerSeconds: Math.round(clampNum(parts[5],10,300)),
+      randomObstacles: !!parts[6],
+      ghostMode: !!parts[7],
+    };
+  }catch(e){ return null; }
+}
+function clampNum(n,lo,hi){ n=Number(n); if(Number.isNaN(n))return lo; return Math.max(lo,Math.min(hi,n)); }
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  PERFORMANCE TIER — scales effects down on low-RAM / low-end mobile devices
@@ -1398,12 +1718,19 @@ const SET5=[ox=>[...spk(ox+1,GY,7)],ox=>[...cspk(ox+1,GY-3*T,6),...spk(ox+1,GY,5
 const SET6=[ox=>[...spk(ox+1,GY,8)],ox=>[...cspk(ox+1,GY-2*T,8),...spk(ox+1,GY,7)],ox=>[laser(ox+1,GY-5*T,GY),laser(ox+2,GY-5*T,GY),laser(ox+3,GY-5*T,GY),laser(ox+5,GY-5*T,GY),laser(ox+6,GY-5*T,GY),...spk(ox+4,GY,1)],ox=>[rol(ox+1,GY),rol(ox+2,GY),rol(ox+4,GY),rol(ox+6,GY),...cspk(ox+3,GY-3*T,2),...spk(ox+7,GY,3)],ox=>[mwall(ox+1,GY-T*2,2,3),mwall(ox+3,GY-T*4,2,3),mwall(ox+5,GY-T*2,2,3),laser(ox+7,GY-5*T,GY),...spk(ox+8,GY,4)],ox=>[...dspk(ox+1),...dspk(ox+4),...dspk(ox+7),rol(ox+3,GY),rol(ox+6,GY)],ox=>[mspk(ox+1,GY-T,100),mspk(ox+2,GY-T*2,100),mspk(ox+3,GY-T,100),mspk(ox+5,GY-T*2,100),mspk(ox+6,GY-T,100),...spk(ox+4,GY,1),...cspk(ox+7,GY-3*T,2)],ox=>[orb(ox+1,GY-T*5),orb(ox+3,GY-T*5),orb(ox+5,GY-T*5),...spk(ox+2,GY,2),...spk(ox+4,GY,2),...cspk(ox+2,GY-3*T,2),laser(ox+7,GY-5*T,GY)]];
 
 const PSETS=[SET0,SET1,SET2,SET3,SET4,SET5,SET6];
-function pickPat(tier){const si=tier.patSets[Math.floor(rng()*tier.patSets.length)];const s=PSETS[si];return s[Math.floor(rng()*s.length)];}
+function pickPat(tier){
+  // Custom Mode "Random Obstacles": ignore tier weighting entirely and pull from
+  // the full pattern pool (every difficulty set), for unpredictable chaos runs.
+  if(customMode && CUSTOM.randomObstacles){
+    const si=Math.floor(rng()*PSETS.length);const s=PSETS[si];return s[Math.floor(rng()*s.length)];
+  }
+  const si=tier.patSets[Math.floor(rng()*tier.patSets.length)];const s=PSETS[si];return s[Math.floor(rng()*s.length)];
+}
 function genChunk(tx){const tier=getTier(distM);const objs=[];objs.push(...pickPat(tier)(tx+1));if(tier.min>=200&&rng()<0.45)objs.push(...pickPat(tier)(tx+Math.floor(CHUNK_W/2)));return{x:tx,w:CHUNK_W,objects:objs};}
 function initChunks(){chunks=[];groundTiles=[];chunkHead=7;for(let i=0;i<8;i++){chunks.push(genChunk(chunkHead));chunkHead+=CHUNK_W;}addGround(0,chunkHead+16);rebuildObjCache();}
 function addGround(a,b){for(let i=a;i<b;i++)groundTiles.push({type:'block',x:i*T,y:GY,w:T,h:H-GY,_g:true});}
-function maybeGen(){let changed=false;while(chunkHead*T<camX+W+T*CHUNK_W*3){chunks.push(genChunk(chunkHead));const o=chunkHead;chunkHead+=CHUNK_W;addGround(o,chunkHead+4);changed=true;}if(changed)rebuildObjCache();}
-function prune(){const e=camX-T*4;const beforeC=chunks.length,beforeG=groundTiles.length;chunks=chunks.filter(ch=>ch.x*T+ch.w*T>e);groundTiles=groundTiles.filter(g=>g.x+g.w>e);if(chunks.length!==beforeC||groundTiles.length!==beforeG)rebuildObjCache();}
+function maybeGen(){if(editorPreviewMode)return;let changed=false;while(chunkHead*T<camX+W+T*CHUNK_W*3){chunks.push(genChunk(chunkHead));const o=chunkHead;chunkHead+=CHUNK_W;addGround(o,chunkHead+4);changed=true;}if(changed)rebuildObjCache();}
+function prune(){if(editorPreviewMode)return;const e=camX-T*4;const beforeC=chunks.length,beforeG=groundTiles.length;chunks=chunks.filter(ch=>ch.x*T+ch.w*T>e);groundTiles=groundTiles.filter(g=>g.x+g.w>e);if(chunks.length!==beforeC||groundTiles.length!==beforeG)rebuildObjCache();}
 
 // ── Perf: flat object cache, rebuilt only when chunks actually change (not every frame) ──
 // Avoids 9x chunks.flatMap(...) array allocations per frame, which was the main GC/CPU
@@ -1663,7 +1990,7 @@ function pauseGame(){if(state!=='playing')return;paused=true;state='paused';paus
 function resumeGame(){if(state!=='paused')return;paused=false;state='playing';pauseScreen.classList.remove('show');exitConfirm.classList.remove('show');}
 function confirmExit(){exitConfirm.classList.add('show');}
 function cancelExit(){exitConfirm.classList.remove('show');}
-function doExitToMenu(){exitConfirm.classList.remove('show');pauseScreen.classList.remove('show');paused=false;goMainMenu();}
+function doExitToMenu(){exitConfirm.classList.remove('show');pauseScreen.classList.remove('show');paused=false;if(editorPreviewMode){editorExitPreview();return;}goMainMenu();}
 window.resumeGame=resumeGame;window.confirmExit=confirmExit;window.cancelExit=cancelExit;window.doExitToMenu=doExitToMenu;
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1679,7 +2006,7 @@ window.addEventListener('keydown',e=>{
   if(e.code==='KeyP'){e.preventDefault();if(state==='playing') pauseGame();else if(state==='paused') resumeGame();return;}
   if(e.code==='Escape'){e.preventDefault();if(state==='paused') resumeGame();else if(state==='training') trainExit();return;}
   if(e.code==='KeyM'){e.preventDefault();if(state==='playing'){ pauseGame(); confirmExit(); }else if(state==='paused'){ confirmExit(); }return;}
-  if(e.code==='Space'&&state==='dead'){e.preventDefault();startGame();return;}
+  if(e.code==='Space'&&state==='dead'&&!editorPreviewMode){e.preventDefault();startGame();return;}
   if((e.code==='Space'||e.code==='Enter')&&state==='menu'){e.preventDefault();menuPlay();return;}
   K[e.code]=true;
   if(['Space','ArrowUp','ShiftLeft','ShiftRight'].includes(e.code))e.preventDefault();
@@ -1723,17 +2050,70 @@ function startGame(){
   camX=0;score=0;distM=0;worldSpeed=BASE_SPD;shake=0;combo=0;comboTimer=0;totalCoins=0;
   initChunks();state='playing';SCREEN.className='';MAINMENU.classList.add('hide');
   document.getElementById('hud-menu-btn').style.display='block';
+
+  if(customMode){
+    customLivesLeft = CUSTOM.lives;
+    customTimeLeft = CUSTOM.timerSeconds*1000;
+    customDeaths = 0;
+    customResultShown = false;
+    customMatchStartScore = 0;
+    document.getElementById('custom-hud').style.display='flex';
+    updateCustomHud();
+  }
 }
 window.startGame=startGame;
 
+// Re-spawn the player in place (course/score/combo kept) — used when Custom Mode
+// has lives remaining so a death costs a life instead of ending the whole match.
+function respawnPlayerInPlace(){
+  const S=SKIN.size;
+  Object.assign(pl,{x:Math.max(100,pl.x-160),y:GY-S,vx:0,vy:0,angle:0,grounded:false,dashing:false,dashTimer:0,dashCD:0,justUsedOrb:false,dead:false,trail:[],particles:[]});
+  state='playing';SCREEN.className='';shake=0;
+}
+
 function killPlayer(){
   if(pl.dead)return;
+  if(customMode && CUSTOM.ghostMode) return; // Ghost Mode: obstacles are visual only, no death
+
+  if(editorPreviewMode){
+    pl.dead=true;spawnDeath();shake=14;state='dead';
+    setTimeout(()=>{
+      SCREEN.innerHTML=`
+        <div style="font-size:26px;font-weight:900;color:#ff00aa;margin-bottom:4px;text-shadow:0 0 14px #ff00aa;">Run Failed</div>
+        <div class="scr-sub">${Math.round(distM)} m into the level</div>
+        <button class="scr-btn" style="margin-top:14px;" onclick="editorRetryPreview()">↻ Retry</button>
+        <button class="scr-btn" onclick="editorExitPreview()">← Back to Editor</button>`;
+      SCREEN.className='show';
+    },200);
+    return;
+  }
+
   pl.dead=true;spawnDeath();shake=14;
   if(score>bestScore)bestScore=score;
   if(distM>bestDist)bestDist=distM;
   const hexaEarned = Math.floor(distM/20); // coin pickups already paid out live during the run
   hexaCoins += hexaEarned;
   attempt++;saveProgress();state='dead';
+
+  if(customMode){
+    customDeaths++;
+    customLivesLeft = Math.max(0, customLivesLeft-1);
+    updateCustomHud();
+    if(customLivesLeft>0){
+      // Lives remain — brief flash, then respawn in place and keep the match going.
+      setTimeout(()=>{
+        SCREEN.innerHTML=`
+          <div style="font-size:24px;font-weight:900;color:#ff00aa;margin-bottom:4px;text-shadow:0 0 14px #ff00aa;">Life Lost</div>
+          <div class="scr-sub">${customLivesLeft} ${customLivesLeft===1?'life':'lives'} remaining</div>`;
+        SCREEN.className='show';
+      },120);
+      setTimeout(()=>{ respawnPlayerInPlace(); },700);
+      return;
+    }
+    // Out of lives — end the Custom Mode match and show results.
+    setTimeout(()=>{ showCustomResults(); },650);
+    return;
+  }
 
   if(partyMode){
     // Multiplayer: report our final result to the room and wait on results,
@@ -1762,6 +2142,9 @@ function goMainMenu(){
   SCREEN.className='';MAINMENU.classList.remove('hide');state='menu';
   document.getElementById('mp-hud').style.display='none';
   document.getElementById('hud-menu-btn').style.display='none';
+  document.getElementById('custom-hud').style.display='none';
+  customMode=false;
+  if(editorPreviewMode){editorPreviewMode=false;document.getElementById('ed-preview-exit').style.display='none';}
   if(partyMode){
     pmReportFinish(false); // mark our racer entry as dead/left so others' standings + ghosts update
     pmStopRace();
@@ -1773,7 +2156,832 @@ function goMainMenu(){
 window.goMainMenu=goMainMenu;
 
 // ══════════════════════════════════════════════════════════════════════════════
+//  CUSTOM GAME MODE — runtime (HUD, match start/results, menu wiring, presets)
+// ══════════════════════════════════════════════════════════════════════════════
+function updateCustomHud(){
+  const el=document.getElementById('custom-hud');
+  if(!el || el.style.display==='none') return;
+  const livesEl=document.getElementById('ch-lives');
+  const timeEl=document.getElementById('ch-time');
+  const livesWrap=document.getElementById('ch-lives-wrap');
+  const timeWrap=document.getElementById('ch-time-wrap');
+  if(livesWrap) livesWrap.style.display = CUSTOM.lives>1 ? 'flex' : 'none';
+  if(timeWrap) timeWrap.style.display = CUSTOM.timerOn ? 'flex' : 'none';
+  if(livesEl) livesEl.textContent = '♥'.repeat(Math.max(0,customLivesLeft)) + '·'.repeat(Math.max(0,CUSTOM.lives-customLivesLeft));
+  if(timeEl){
+    const secs=Math.max(0,Math.ceil(customTimeLeft/1000));
+    const m=Math.floor(secs/60),s=secs%60;
+    timeEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    timeEl.style.color = secs<=10 ? '#ff5555' : '#00f0ff';
+  }
+}
+
+// Begin a Custom Mode match using the currently configured CUSTOM ruleset.
+function startCustomGame(){
+  customMode = true;
+  partyMode = false;
+  hideOv('custom-ov');
+  startGame();
+}
+window.startCustomGame = startCustomGame;
+
+// Ends the current Custom Mode match (lives exhausted, or timer ran out) and shows
+// a results screen tracking Score, Time survived, and Deaths — per the brief.
+function showCustomResults(){
+  if(customResultShown) return;
+  customResultShown = true;
+  state='dead';
+  pl.dead=true;
+  const timeSurvivedMs = CUSTOM.timerOn ? (CUSTOM.timerSeconds*1000 - Math.max(0,customTimeLeft)) : performance.now()-customMatchStartedAt;
+  const secs = Math.max(0,Math.round(timeSurvivedMs/1000));
+  const m=Math.floor(secs/60), s=secs%60;
+  if(score>bestScore)bestScore=score;
+  if(distM>bestDist)bestDist=distM;
+  attempt++;saveProgress();
+
+  SCREEN.innerHTML=`
+    <h1 style="font-size:36px;">Match Complete</h1>
+    <div class="scr-sub" style="color:#ffb000;letter-spacing:2px;">CUSTOM MODE RESULTS</div>
+    <div class="stats-grid" style="margin-top:18px;">
+      <div class="stat-card"><div class="stat-card-lbl">Score</div><div class="stat-card-val">${score}</div></div>
+      <div class="stat-card"><div class="stat-card-lbl">Time</div><div class="stat-card-val">${m}:${s.toString().padStart(2,'0')}</div></div>
+      <div class="stat-card"><div class="stat-card-lbl">Deaths</div><div class="stat-card-val">${customDeaths}</div></div>
+      <div class="stat-card"><div class="stat-card-lbl">Distance</div><div class="stat-card-val">${Math.round(distM)}m</div></div>
+    </div>
+    <div class="scr-btns" style="margin-top:24px;pointer-events:all;">
+      <button class="scr-btn" onclick="startCustomGame()">Rematch</button>
+      <button class="scr-btn" onclick="document.getElementById('screen').className='';goMainMenu();">Menu</button>
+    </div>`;
+  SCREEN.className='show';
+  SCREEN.style.pointerEvents='all';
+}
+window.showCustomResults = showCustomResults;
+let customMatchStartedAt = 0;
+const _origStartGame = startGame;
+// Wrap startGame once to stamp the match-start time for non-timer Custom Mode runs
+// (needed to compute "Time" in results when there's no countdown to read from).
+startGame = function(){
+  _origStartGame();
+  if(customMode) customMatchStartedAt = performance.now();
+};
+window.startGame = startGame;
+
+// ── Custom Mode settings overlay ───────────────────────────────────────────────
+function menuCustomMode(){
+  renderCustomForm();
+  renderCustomPresetList();
+  showOv('custom-ov');
+}
+window.menuCustomMode = menuCustomMode;
+
+function renderCustomForm(){
+  document.getElementById('cm-speed').value = CUSTOM.speedMult;
+  document.getElementById('cm-speed-val').textContent = CUSTOM.speedMult.toFixed(2)+'x';
+  document.getElementById('cm-gravity').value = CUSTOM.gravityMult;
+  document.getElementById('cm-gravity-val').textContent = CUSTOM.gravityMult.toFixed(2)+'x';
+  document.getElementById('cm-lives').value = CUSTOM.lives;
+  document.getElementById('cm-lives-val').textContent = CUSTOM.lives;
+  document.getElementById('cm-coins').checked = CUSTOM.coinsEnabled;
+  document.getElementById('cm-timer').checked = CUSTOM.timerOn;
+  document.getElementById('cm-timersecs').value = CUSTOM.timerSeconds;
+  document.getElementById('cm-timersecs-val').textContent = CUSTOM.timerSeconds+'s';
+  document.getElementById('cm-timersecs-row').style.display = CUSTOM.timerOn ? 'flex' : 'none';
+  document.getElementById('cm-random').checked = CUSTOM.randomObstacles;
+  document.getElementById('cm-ghost').checked = CUSTOM.ghostMode;
+  refreshCustomShareCode();
+}
+
+function cmOnChange(){
+  CUSTOM.speedMult = clampNum(document.getElementById('cm-speed').value,0.5,2.0);
+  CUSTOM.gravityMult = clampNum(document.getElementById('cm-gravity').value,0.5,2.0);
+  CUSTOM.lives = Math.round(clampNum(document.getElementById('cm-lives').value,1,9));
+  CUSTOM.coinsEnabled = document.getElementById('cm-coins').checked;
+  CUSTOM.timerOn = document.getElementById('cm-timer').checked;
+  CUSTOM.timerSeconds = Math.round(clampNum(document.getElementById('cm-timersecs').value,10,300));
+  CUSTOM.randomObstacles = document.getElementById('cm-random').checked;
+  CUSTOM.ghostMode = document.getElementById('cm-ghost').checked;
+  document.getElementById('cm-speed-val').textContent = CUSTOM.speedMult.toFixed(2)+'x';
+  document.getElementById('cm-gravity-val').textContent = CUSTOM.gravityMult.toFixed(2)+'x';
+  document.getElementById('cm-lives-val').textContent = CUSTOM.lives;
+  document.getElementById('cm-timersecs-val').textContent = CUSTOM.timerSeconds+'s';
+  document.getElementById('cm-timersecs-row').style.display = CUSTOM.timerOn ? 'flex' : 'none';
+  refreshCustomShareCode();
+}
+window.cmOnChange = cmOnChange;
+
+function cmResetDefaults(){
+  CUSTOM = {...CUSTOM_DEFAULTS};
+  renderCustomForm();
+}
+window.cmResetDefaults = cmResetDefaults;
+
+function refreshCustomShareCode(){
+  const code = encodeCustomCode(CUSTOM);
+  const el = document.getElementById('cm-share-code');
+  if(el) el.value = code;
+}
+
+function cmCopyShareCode(){
+  const el = document.getElementById('cm-share-code');
+  if(!el) return;
+  el.select();
+  navigator.clipboard?.writeText(el.value).catch(()=>{});
+  const msg=document.getElementById('cm-msg');
+  if(msg){ msg.textContent='Code copied!'; msg.style.color='#00ff88'; setTimeout(()=>{msg.textContent='';},1800); }
+}
+window.cmCopyShareCode = cmCopyShareCode;
+
+function cmImportShareCode(){
+  const input = document.getElementById('cm-import-code');
+  const msg=document.getElementById('cm-msg');
+  const decoded = decodeCustomCode((input.value||'').trim());
+  if(!decoded){
+    if(msg){ msg.textContent='Invalid code'; msg.style.color='#ff5555'; setTimeout(()=>{msg.textContent='';},1800); }
+    return;
+  }
+  CUSTOM = decoded;
+  input.value='';
+  renderCustomForm();
+  if(msg){ msg.textContent='Settings imported!'; msg.style.color='#00ff88'; setTimeout(()=>{msg.textContent='';},1800); }
+}
+window.cmImportShareCode = cmImportShareCode;
+
+function cmSavePreset(){
+  const nameInput = document.getElementById('cm-preset-name');
+  const name = (nameInput.value||'').trim().slice(0,20);
+  if(!name) return;
+  const presets = loadCustomPresets();
+  presets[name] = {...CUSTOM};
+  saveCustomPresets(presets);
+  nameInput.value='';
+  renderCustomPresetList();
+  const msg=document.getElementById('cm-msg');
+  if(msg){ msg.textContent=`Saved preset "${name}"`; msg.style.color='#00ff88'; setTimeout(()=>{msg.textContent='';},1800); }
+}
+window.cmSavePreset = cmSavePreset;
+
+function cmLoadPreset(name){
+  const presets = loadCustomPresets();
+  if(!presets[name]) return;
+  CUSTOM = {...CUSTOM_DEFAULTS, ...presets[name]};
+  renderCustomForm();
+}
+window.cmLoadPreset = cmLoadPreset;
+
+function cmDeletePreset(name){
+  const presets = loadCustomPresets();
+  delete presets[name];
+  saveCustomPresets(presets);
+  renderCustomPresetList();
+}
+window.cmDeletePreset = cmDeletePreset;
+
+function renderCustomPresetList(){
+  const wrap = document.getElementById('cm-preset-list');
+  if(!wrap) return;
+  const presets = loadCustomPresets();
+  const names = Object.keys(presets);
+  if(names.length===0){
+    wrap.innerHTML = `<div style="font-size:10px;color:#666;letter-spacing:0.5px;">No saved presets yet.</div>`;
+    return;
+  }
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  wrap.innerHTML = names.map(n=>`
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(0,16,36,0.5);border:1px solid rgba(0,240,255,0.15);padding:6px 10px;">
+      <div style="flex:1;font-size:11px;font-weight:900;color:#fff;letter-spacing:0.5px;">${escHtml(n)}</div>
+      <button class="scr-btn" style="padding:5px 12px;font-size:9px;min-width:0;" onclick="cmLoadPreset('${n.replace(/'/g,"\\'")}')">Load</button>
+      <button class="scr-btn" style="padding:5px 12px;font-size:9px;min-width:0;background:linear-gradient(to bottom,#ff3355,#aa0022);box-shadow:0 4px 0 #660011;" onclick="cmDeletePreset('${n.replace(/'/g,"\\'")}')">✕</button>
+    </div>`).join('');
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  LEVEL EDITOR — drag-and-drop block placement, real-physics preview, save/load
+// ══════════════════════════════════════════════════════════════════════════════
+// Levels are stored in the same lightweight {type, tx, ...} tile-coordinate format
+// already used by TRAIN_STEPS' hand-authored obstacle arrays. tx is in tile units
+// (1 tile = T px). Preview converts this array into real pixel objects using the
+// same spk/blk/orb/cspike/rol/laser/mspike/mwall/coin factories the procedural
+// generator uses, then runs the normal playing state so collisions are 1:1 with
+// the real game.
+const ED_LEVEL_KEY = 'georun_custom_levels';
+const ED_GROUND_Y = 11; // ground row, in tile units from top of the editor grid
+const ED_ROWS = 13;     // visible vertical rows in the grid (matches canvas height / T)
+
+// Each palette entry: id = type used in the saved level array, plus how to render
+// a small preview icon and a short usage hint shown when selected.
+const ED_PALETTE = [
+  { group:'blocks',  type:'ground', label:'Ground',   hint:'Solid floor tile. Stand and run on it.' },
+  { group:'blocks',  type:'block',  label:'Block',    hint:'Solid platform. Jump on top, or into it from the side to bounce off.' },
+  { group:'hazards', type:'spike',  label:'Spike',    hint:'Floor spike. Touching it ends the run.' },
+  { group:'hazards', type:'cspike', label:'Ceiling Spike', hint:'Hangs from above. Stay low to avoid it.' },
+  { group:'hazards', type:'roller', label:'Saw',      hint:'Spinning saw blade. Jump over it.' },
+  { group:'hazards', type:'laser',  label:'Laser',    hint:'Pulses on and off. Time your run through the gap.' },
+  { group:'hazards', type:'mspike', label:'Moving Spike', hint:'Drifts up and down. Watch its rhythm.' },
+  { group:'hazards', type:'mwall',  label:'Moving Wall', hint:'Slides side to side. Don\u2019t get pinned.' },
+  { group:'pickups', type:'coin',   label:'Coin',     hint:'Optional pickup. Adds to your run score.' },
+  { group:'pickups', type:'orb',    label:'Jump Orb',  hint:'Tap jump again near it for a mid-air super-jump.' },
+];
+
+let edLevel = [];          // the authored objects: [{type, tx, ty?, n?, w?, h?, ...}]
+let edLevelLen = 60;        // total level length in tiles
+let edTool = 'block';       // currently selected palette type, or 'eraser'
+let edScrollX = 0;          // horizontal scroll offset, in tiles
+let edDraggingScrollbar = false;
+let edCurrentLevelName = null; // name of the loaded/saved level, for overwrite-on-save
+let edPlacedDrag = null;    // object currently being picked up & moved (or null)
+
+function editorOpen(){
+  MAINMENU.classList.add('hide');
+  if(!edLevel.length) editorClearLevel(true);
+  edCurrentLevelName = edCurrentLevelName || null;
+  document.getElementById('ed-name-input').value = edCurrentLevelName || '';
+  editorBuildPalette();
+  editorSelectTool('ground');
+  edScrollX = 0;
+  showOv('editor-ov');
+  editorRender();
+  editorUpdateStatus();
+}
+window.editorOpen = editorOpen;
+
+function editorExit(){
+  hideOv('editor-ov');
+  goMainMenu();
+}
+window.editorExit = editorExit;
+
+function editorClearLevel(silent){
+  edLevel = [];
+  // start with a flat ground row across the whole level so it's immediately playable
+  for(let i=0;i<edLevelLen;i++) edLevel.push({type:'ground', tx:i});
+  edCurrentLevelName = null;
+  if(!silent){
+    document.getElementById('ed-name-input').value='';
+    editorRender();
+    editorUpdateStatus();
+    editorMsg('Cleared');
+  }
+}
+function editorClearConfirm(){
+  if(!confirm('Clear the whole level? This can\u2019t be undone.')) return;
+  editorClearLevel(false);
+}
+window.editorClearConfirm = editorClearConfirm;
+
+function editorExtendLevel(){
+  const from = edLevelLen;
+  edLevelLen += 20;
+  for(let i=from;i<edLevelLen;i++) edLevel.push({type:'ground', tx:i});
+  editorRender();
+  editorUpdateStatus();
+}
+window.editorExtendLevel = editorExtendLevel;
+
+// ── Palette UI ──────────────────────────────────────────────────────────────
+function editorBuildPalette(){
+  const groups = { blocks:'ed-palette-blocks', hazards:'ed-palette-hazards', pickups:'ed-palette-pickups' };
+  Object.values(groups).forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
+  ED_PALETTE.forEach(def=>{
+    const wrap=document.getElementById(groups[def.group]);
+    if(!wrap) return;
+    const btn=document.createElement('div');
+    btn.className='ed-block';
+    btn.id='ed-pal-'+def.type;
+    btn.onclick=()=>editorSelectTool(def.type);
+    const cv=document.createElement('canvas');
+    cv.width=40;cv.height=40;
+    btn.appendChild(cv);
+    const lbl=document.createElement('div');
+    lbl.className='ed-block-lbl';
+    lbl.textContent=def.label;
+    btn.appendChild(lbl);
+    wrap.appendChild(btn);
+    editorDrawPaletteIcon(cv, def.type);
+  });
+}
+
+// Renders a small static icon for a palette entry using the same shapes as the
+// real game (just simplified params), so what you pick is what you'll see in-level.
+function editorDrawPaletteIcon(cv, type){
+  const g=cv.getContext('2d');
+  const w=cv.width,h=cv.height,cx=w/2,cy=h/2;
+  g.clearRect(0,0,w,h);
+  g.lineWidth=2;
+  if(type==='ground'){
+    g.fillStyle='#0a1a3a';g.strokeStyle='#00f0ff';g.fillRect(4,18,32,18);g.strokeRect(4,18,32,18);
+  } else if(type==='block'){
+    g.fillStyle='#040c2a';g.strokeStyle='#00f0ff';g.fillRect(8,8,24,24);g.strokeRect(8,8,24,24);
+  } else if(type==='spike'){
+    g.fillStyle='#100028';g.strokeStyle='#ff00aa';g.beginPath();g.moveTo(cx,8);g.lineTo(32,32);g.lineTo(8,32);g.closePath();g.fill();g.stroke();
+  } else if(type==='cspike'){
+    g.fillStyle='#080030';g.strokeStyle='#aa00ff';g.beginPath();g.moveTo(cx,32);g.lineTo(32,8);g.lineTo(8,8);g.closePath();g.fill();g.stroke();
+  } else if(type==='roller'){
+    g.strokeStyle='#ff6600';g.beginPath();g.arc(cx,cy,13,0,Math.PI*2);g.stroke();
+    g.strokeStyle='#ff8800';for(let i=0;i<6;i++){const a=i*Math.PI/3;g.beginPath();g.moveTo(cx+Math.cos(a)*6,cy+Math.sin(a)*6);g.lineTo(cx+Math.cos(a)*12,cy+Math.sin(a)*12);g.stroke();}
+    g.fillStyle='#ff4400';g.beginPath();g.arc(cx,cy,3,0,Math.PI*2);g.fill();
+  } else if(type==='laser'){
+    g.strokeStyle='#ff2200';g.lineWidth=3;g.beginPath();g.moveTo(cx,6);g.lineTo(cx,34);g.stroke();
+    g.fillStyle='#ff2200';g.beginPath();g.arc(cx,6,3,0,Math.PI*2);g.fill();g.beginPath();g.arc(cx,34,3,0,Math.PI*2);g.fill();
+  } else if(type==='mspike'){
+    g.fillStyle='#1a0035';g.strokeStyle='#cc44ff';g.beginPath();g.moveTo(8,28);g.lineTo(cx,10);g.lineTo(32,28);g.closePath();g.fill();g.stroke();
+    g.strokeStyle='rgba(204,68,255,0.5)';g.beginPath();g.moveTo(6,33);g.lineTo(34,33);g.stroke();
+  } else if(type==='mwall'){
+    g.fillStyle='#0a003a';g.strokeStyle='#aa00ff';g.fillRect(14,6,12,28);g.strokeRect(14,6,12,28);
+    g.strokeStyle='rgba(170,0,255,0.5)';g.beginPath();g.moveTo(6,cy);g.lineTo(11,cy);g.moveTo(29,cy);g.lineTo(34,cy);g.stroke();
+  } else if(type==='coin'){
+    g.strokeStyle='#ffd700';g.fillStyle='rgba(255,215,0,0.55)';
+    g.beginPath();g.moveTo(cx,8);g.lineTo(30,cy);g.lineTo(cx,32);g.lineTo(10,cy);g.closePath();g.fill();g.stroke();
+  } else if(type==='orb'){
+    const grd=g.createRadialGradient(cx,cy,0,cx,cy,12);grd.addColorStop(0,'rgba(255,255,180,.95)');grd.addColorStop(.5,'#ffd700');grd.addColorStop(1,'rgba(255,200,0,0)');
+    g.fillStyle=grd;g.beginPath();g.arc(cx,cy,12,0,Math.PI*2);g.fill();
+    g.strokeStyle='#ffd700';g.beginPath();g.arc(cx,cy,15,0,Math.PI*2);g.stroke();
+  }
+}
+
+function editorSelectTool(type){
+  edTool = type;
+  document.querySelectorAll('.ed-block').forEach(el=>el.classList.remove('active'));
+  document.getElementById('ed-eraser-btn').classList.toggle('active', type==='eraser');
+  if(type!=='eraser'){
+    const el=document.getElementById('ed-pal-'+type);
+    if(el) el.classList.add('active');
+  }
+  const def = ED_PALETTE.find(p=>p.type===type);
+  document.getElementById('ed-status-tool').textContent = type==='eraser' ? 'Eraser' : (def?def.label:type);
+  editorMsg(type==='eraser' ? 'Click a placed block to delete it.' : (def?def.hint:''));
+}
+window.editorSelectTool = editorSelectTool;
+
+function editorMsg(text){
+  const el=document.getElementById('ed-msg');
+  if(el) el.textContent = text||'';
+}
+
+function editorUpdateStatus(){
+  document.getElementById('ed-status-count').textContent = edLevel.filter(o=>o.type!=='ground').length;
+  document.getElementById('ed-status-length').textContent = edLevelLen;
+}
+
+// ── Grid canvas ─────────────────────────────────────────────────────────────
+// The editor uses its own small tile size (ET) independent of the main game's T,
+// purely so a comfortable number of rows/cols fit the panel — tx/ty are stored in
+// the same tile units either way, so preview just multiplies by the real T.
+const ET = 46;
+const edCanvas = document.getElementById('ed-canvas');
+const edCtx = edCanvas.getContext('2d');
+
+function editorVisibleCols(){ return Math.ceil(edCanvas.width/ET)+1; }
+
+function editorRender(){
+  const w=edCanvas.width,h=edCanvas.height;
+  edCtx.clearRect(0,0,w,h);
+  edCtx.fillStyle='#020208';edCtx.fillRect(0,0,w,h);
+
+  // grid lines
+  edCtx.strokeStyle='rgba(0,240,255,0.07)';edCtx.lineWidth=1;
+  const startCol=Math.floor(edScrollX);
+  const offX=-(edScrollX-startCol)*ET;
+  for(let c=0;c<=editorVisibleCols();c++){
+    const x=offX+c*ET;
+    edCtx.beginPath();edCtx.moveTo(x,0);edCtx.lineTo(x,h);edCtx.stroke();
+  }
+  for(let r=0;r<=ED_ROWS;r++){
+    const y=r*ET;
+    edCtx.beginPath();edCtx.moveTo(0,y);edCtx.lineTo(w,y);edCtx.stroke();
+  }
+  // ground-row marker line (visual guide only)
+  edCtx.strokeStyle='rgba(0,255,136,0.18)';edCtx.lineWidth=2;
+  edCtx.beginPath();edCtx.moveTo(0,ED_GROUND_Y*ET);edCtx.lineTo(w,ED_GROUND_Y*ET);edCtx.stroke();
+
+  // level-end marker
+  const endX=offX+(edLevelLen-startCol)*ET;
+  if(endX>=0&&endX<=w){
+    edCtx.strokeStyle='rgba(255,176,0,0.5)';edCtx.lineWidth=2;edCtx.setLineDash([6,5]);
+    edCtx.beginPath();edCtx.moveTo(endX,0);edCtx.lineTo(endX,h);edCtx.stroke();edCtx.setLineDash([]);
+  }
+
+  // objects
+  edLevel.forEach(o=>editorDrawObj(o, offX, startCol));
+
+  editorRenderScrollbar();
+}
+
+function editorObjRow(o){
+  // Returns the row (tile units from top) an object's icon should be centered on.
+  if(o.type==='ground') return ED_GROUND_Y;
+  return (o.ty!==undefined) ? o.ty : ED_GROUND_Y-1;
+}
+
+function editorDrawObj(o, offX, startCol){
+  const col=o.tx-startCol;
+  const x=offX+col*ET;
+  const row=editorObjRow(o);
+  const y=row*ET;
+  if(x<-ET||x>edCanvas.width+ET) return;
+  const cx=x+ET/2, cy=y+ET/2;
+  edCtx.save();
+  if(o.type==='ground'){
+    edCtx.fillStyle='#0a1a3a';edCtx.strokeStyle='#00f0ff';edCtx.lineWidth=2;
+    edCtx.fillRect(x+2,y+2,ET-4,ET-4);edCtx.strokeRect(x+2,y+2,ET-4,ET-4);
+  } else if(o.type==='block'){
+    const bw=(o.w||1)*ET, bh=(o.h||1)*ET;
+    const by=y-bh+ET; // grow upward from the block's bottom row, matching editorFindObjAt
+    edCtx.fillStyle='#040c2a';edCtx.strokeStyle='#00f0ff';edCtx.lineWidth=2;
+    edCtx.fillRect(x+2,by+2,bw-4,bh-4);edCtx.strokeRect(x+2,by+2,bw-4,bh-4);
+  } else if(o.type==='spike'){
+    edCtx.fillStyle='#100028';edCtx.strokeStyle='#ff00aa';edCtx.lineWidth=2;
+    edCtx.beginPath();edCtx.moveTo(cx,y+6);edCtx.lineTo(x+ET-4,y+ET-4);edCtx.lineTo(x+4,y+ET-4);edCtx.closePath();edCtx.fill();edCtx.stroke();
+  } else if(o.type==='cspike'){
+    edCtx.fillStyle='#080030';edCtx.strokeStyle='#aa00ff';edCtx.lineWidth=2;
+    edCtx.beginPath();edCtx.moveTo(cx,y+ET-6);edCtx.lineTo(x+ET-4,y+4);edCtx.lineTo(x+4,y+4);edCtx.closePath();edCtx.fill();edCtx.stroke();
+  } else if(o.type==='roller'){
+    edCtx.strokeStyle='#ff6600';edCtx.lineWidth=2.5;edCtx.beginPath();edCtx.arc(cx,cy,ET*0.32,0,Math.PI*2);edCtx.stroke();
+    edCtx.strokeStyle='#ff8800';for(let i=0;i<6;i++){const a=i*Math.PI/3;edCtx.beginPath();edCtx.moveTo(cx+Math.cos(a)*ET*0.15,cy+Math.sin(a)*ET*0.15);edCtx.lineTo(cx+Math.cos(a)*ET*0.3,cy+Math.sin(a)*ET*0.3);edCtx.stroke();}
+    edCtx.fillStyle='#ff4400';edCtx.beginPath();edCtx.arc(cx,cy,3,0,Math.PI*2);edCtx.fill();
+  } else if(o.type==='laser'){
+    edCtx.strokeStyle='#ff2200';edCtx.lineWidth=3;edCtx.beginPath();edCtx.moveTo(cx,y+4);edCtx.lineTo(cx,ED_GROUND_Y*ET);edCtx.stroke();
+    edCtx.fillStyle='#ff2200';edCtx.beginPath();edCtx.arc(cx,y+4,4,0,Math.PI*2);edCtx.fill();
+  } else if(o.type==='mspike'){
+    edCtx.fillStyle='#1a0035';edCtx.strokeStyle='#cc44ff';edCtx.lineWidth=2;
+    edCtx.beginPath();edCtx.moveTo(x+4,y+ET-6);edCtx.lineTo(cx,y+6);edCtx.lineTo(x+ET-4,y+ET-6);edCtx.closePath();edCtx.fill();edCtx.stroke();
+    edCtx.strokeStyle='rgba(204,68,255,0.35)';edCtx.beginPath();edCtx.moveTo(x+2,y-6);edCtx.lineTo(x+2,y+ET+6);edCtx.stroke();
+  } else if(o.type==='mwall'){
+    edCtx.fillStyle='#0a003a';edCtx.strokeStyle='#aa00ff';edCtx.lineWidth=2;
+    const bh=(o.h||3)*ET;
+    edCtx.fillRect(x+ET*0.2,y-bh+ET,ET*0.6,bh-4);edCtx.strokeRect(x+ET*0.2,y-bh+ET,ET*0.6,bh-4);
+  } else if(o.type==='coin'&&!(o.collected)){
+    edCtx.strokeStyle='#ffd700';edCtx.fillStyle='rgba(255,215,0,0.55)';edCtx.lineWidth=2;
+    edCtx.beginPath();edCtx.moveTo(cx,y+6);edCtx.lineTo(x+ET-8,cy);edCtx.lineTo(cx,y+ET-6);edCtx.lineTo(x+8,cy);edCtx.closePath();edCtx.fill();edCtx.stroke();
+  } else if(o.type==='orb'){
+    const grd=edCtx.createRadialGradient(cx,cy,0,cx,cy,ET*0.3);grd.addColorStop(0,'rgba(255,255,180,.95)');grd.addColorStop(.5,'#ffd700');grd.addColorStop(1,'rgba(255,200,0,0)');
+    edCtx.fillStyle=grd;edCtx.beginPath();edCtx.arc(cx,cy,ET*0.3,0,Math.PI*2);edCtx.fill();
+    edCtx.strokeStyle='#ffd700';edCtx.lineWidth=1.5;edCtx.beginPath();edCtx.arc(cx,cy,ET*0.38,0,Math.PI*2);edCtx.stroke();
+  }
+  // drag-pickup highlight
+  if(edPlacedDrag===o){
+    const hl = o.type==='block' ? (o.h||1)*ET : ET;
+    const hy = o.type==='block' ? y-hl+ET : y;
+    edCtx.strokeStyle='#fff';edCtx.lineWidth=2;edCtx.setLineDash([4,3]);
+    edCtx.strokeRect(x+1,hy+1,ET-2,hl-2);edCtx.setLineDash([]);
+  }
+  edCtx.restore();
+}
+
+function editorRenderScrollbar(){
+  const track=document.getElementById('ed-scrollbar');
+  const thumb=document.getElementById('ed-scrollbar-thumb');
+  if(!track||!thumb) return;
+  const trackW=track.clientWidth;
+  if(trackW<=0) return;
+  const visCols=editorVisibleCols();
+  const totalCols=Math.max(edLevelLen+6, visCols+1);
+  const thumbW=Math.max(30, trackW*Math.min(1,visCols/totalCols));
+  const maxScroll=Math.max(1,totalCols-visCols);
+  const left=(trackW-thumbW)*Math.min(1,edScrollX/maxScroll);
+  thumb.style.width=thumbW+'px';
+  thumb.style.left=left+'px';
+}
+
+function editorScrollToX(px){
+  const track=document.getElementById('ed-scrollbar');
+  const trackW=track.clientWidth;
+  if(trackW<=0) return;
+  const visCols=editorVisibleCols();
+  const totalCols=Math.max(edLevelLen+6, visCols+1);
+  const maxScroll=Math.max(1,totalCols-visCols);
+  const frac=Math.max(0,Math.min(1,px/trackW));
+  edScrollX=frac*maxScroll;
+  editorRender();
+}
+
+document.getElementById('ed-scrollbar').addEventListener('pointerdown',e=>{
+  edDraggingScrollbar=true;
+  const rect=e.currentTarget.getBoundingClientRect();
+  editorScrollToX(e.clientX-rect.left);
+});
+window.addEventListener('pointermove',e=>{
+  if(!edDraggingScrollbar) return;
+  const track=document.getElementById('ed-scrollbar');
+  const rect=track.getBoundingClientRect();
+  editorScrollToX(e.clientX-rect.left);
+});
+window.addEventListener('pointerup',()=>{edDraggingScrollbar=false;});
+
+document.getElementById('ed-canvas-wrap').addEventListener('wheel',e=>{
+  if(document.getElementById('editor-ov').classList.contains('show')===false) return;
+  e.preventDefault();
+  const visCols=editorVisibleCols();
+  const totalCols=Math.max(edLevelLen+6, visCols+1);
+  const maxScroll=Math.max(1,totalCols-visCols);
+  edScrollX=Math.max(0,Math.min(maxScroll, edScrollX+Math.sign(e.deltaY)*1.4));
+  editorRender();
+},{passive:false});
+
+function editorCellFromEvent(e){
+  const rect=edCanvas.getBoundingClientRect();
+  const scaleX=edCanvas.width/rect.width, scaleY=edCanvas.height/rect.height;
+  const px=(e.clientX-rect.left)*scaleX, py=(e.clientY-rect.top)*scaleY;
+  const startCol=Math.floor(edScrollX);
+  const offX=-(edScrollX-startCol)*ET;
+  const tx=startCol+Math.floor((px-offX)/ET);
+  const ty=Math.floor(py/ET);
+  return {tx,ty};
+}
+
+function editorFindObjAt(tx,ty){
+  // search topmost-placed-last first so the most recently placed block wins on overlap
+  for(let i=edLevel.length-1;i>=0;i--){
+    const o=edLevel[i];
+    if(o.tx!==tx) continue;
+    const row=editorObjRow(o);
+    if(o.type==='block'){
+      const h=o.h||1;
+      if(ty>=row-(h-1)&&ty<=row) return o;
+    } else if(o.type==='mwall'){
+      const h=o.h||3;
+      if(ty<=row&&ty>row-h) return o;
+    } else {
+      if(ty===row) return o;
+    }
+  }
+  return null;
+}
+
+edCanvas.addEventListener('pointerdown', e=>{
+  const {tx,ty}=editorCellFromEvent(e);
+  if(tx<0||ty<0||ty>=ED_ROWS) return;
+
+  const existing=editorFindObjAt(tx,ty);
+
+  if(edTool==='eraser'){
+    if(existing){
+      edLevel=edLevel.filter(o=>o!==existing);
+      if(edPlacedDrag===existing) edPlacedDrag=null;
+      editorRender();editorUpdateStatus();
+      editorMsg('Deleted.');
+    }
+    return;
+  }
+
+  if(edPlacedDrag){
+    // dropping a previously picked-up block onto a new cell
+    if(existing && existing!==edPlacedDrag){
+      editorMsg('That cell is occupied — pick another, or click the eraser to clear it.');
+      return;
+    }
+    edPlacedDrag.tx=tx;
+    if(edPlacedDrag.type!=='ground') edPlacedDrag.ty=ty;
+    edPlacedDrag=null;
+    editorRender();editorUpdateStatus();
+    editorMsg('Moved.');
+    return;
+  }
+
+  // clicking an existing block of the SAME type that's currently selected picks
+  // it up to move it, rather than fighting to re-place on an occupied cell
+  if(existing && existing.type===edTool && existing.type!=='ground'){
+    edPlacedDrag=existing;
+    editorRender();
+    editorMsg('Click a new spot to drop it, or the same spot to keep it.');
+    return;
+  }
+
+  // placing a brand-new block of the selected type
+  if(edTool==='ground'){
+    if(!editorFindObjAt(tx,ED_GROUND_Y)) edLevel.push({type:'ground',tx});
+    editorRender();editorUpdateStatus();
+    return;
+  }
+  if(existing){ editorMsg('Cell occupied — select the eraser to clear it, or pick the same block type to move it.'); return; }
+  if(tx>=edLevelLen-1){ editorMsg('Extend the level to place blocks past the end marker.'); return; }
+
+  const obj = editorMakeObj(edTool, tx, ty);
+  edLevel.push(obj);
+  editorRender();editorUpdateStatus();
+});
+
+// Builds a freshly-placed authored object with sensible defaults per type.
+function editorMakeObj(type, tx, ty){
+  const row = (ty!==undefined && ty!==null) ? ty : ED_GROUND_Y-1;
+  switch(type){
+    case 'block':  return {type:'block',  tx, ty:row, w:1, h:1};
+    case 'spike':  return {type:'spike',  tx, ty:row};
+    case 'cspike': return {type:'cspike', tx, ty:row};
+    case 'roller': return {type:'roller', tx, ty:row};
+    case 'laser':  return {type:'laser',  tx, ty:row, period:1700};
+    case 'mspike': return {type:'mspike', tx, ty:row, amp:50};
+    case 'mwall':  return {type:'mwall',  tx, ty:row, h:3, amp:1};
+    case 'coin':   return {type:'coin',   tx, ty:row};
+    case 'orb':    return {type:'orb',    tx, ty:row};
+    default:       return {type, tx, ty:row};
+  }
+}
+
+// ── Save / Load: multiple named levels, stored like Custom Mode presets ────
+function editorLoadAllLevels(){
+  try{ return JSON.parse(localStorage.getItem(ED_LEVEL_KEY)) || {}; }catch(e){ return {}; }
+}
+function editorSaveAllLevels(levels){
+  try{ localStorage.setItem(ED_LEVEL_KEY, JSON.stringify(levels)); }catch(e){}
+}
+
+function editorSaveLevel(){
+  const nameInput = document.getElementById('ed-name-input');
+  const name = (nameInput.value||'').trim().slice(0,22);
+  if(!name){ editorMsg('Give your level a name first.'); nameInput.focus(); return; }
+  const levels = editorLoadAllLevels();
+  levels[name] = { objects:edLevel, len:edLevelLen, savedAt:Date.now() };
+  editorSaveAllLevels(levels);
+  edCurrentLevelName = name;
+  editorMsg(`Saved "${name}".`);
+}
+window.editorSaveLevel = editorSaveLevel;
+
+function editorLoadMenu(){
+  editorRenderLevelList();
+  showOv('editor-list-ov');
+}
+window.editorLoadMenu = editorLoadMenu;
+
+function editorRenderLevelList(){
+  const wrap=document.getElementById('ed-list-rows');
+  const empty=document.getElementById('ed-list-empty');
+  const levels=editorLoadAllLevels();
+  const names=Object.keys(levels).sort((a,b)=>(levels[b].savedAt||0)-(levels[a].savedAt||0));
+  if(names.length===0){
+    wrap.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  wrap.innerHTML = names.map(n=>{
+    const lv=levels[n];
+    const objCount=(lv.objects||[]).filter(o=>o.type!=='ground').length;
+    const safe=n.replace(/'/g,"\\'");
+    return `
+    <div class="ed-list-row">
+      <div class="ed-list-name">${escHtml(n)}</div>
+      <div class="ed-list-meta">${lv.len||'?'} tiles · ${objCount} blocks</div>
+      <button class="scr-btn" style="padding:6px 14px;font-size:9px;min-width:0;" onclick="editorLoadLevel('${safe}')">Load</button>
+      <button class="scr-btn" style="padding:6px 14px;font-size:9px;min-width:0;background:linear-gradient(to bottom,#ff3355,#aa0022);box-shadow:0 4px 0 #660011;" onclick="editorDeleteLevel('${safe}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function editorLoadLevel(name){
+  const levels=editorLoadAllLevels();
+  if(!levels[name]) return;
+  edLevel = (levels[name].objects||[]).map(o=>({...o}));
+  edLevelLen = levels[name].len || 60;
+  edCurrentLevelName = name;
+  document.getElementById('ed-name-input').value = name;
+  hideOv('editor-list-ov');
+  edScrollX=0;
+  editorRender();
+  editorUpdateStatus();
+  editorMsg(`Loaded "${name}".`);
+}
+window.editorLoadLevel = editorLoadLevel;
+
+function editorDeleteLevel(name){
+  const levels=editorLoadAllLevels();
+  delete levels[name];
+  editorSaveAllLevels(levels);
+  if(edCurrentLevelName===name) edCurrentLevelName=null;
+  editorRenderLevelList();
+}
+window.editorDeleteLevel = editorDeleteLevel;
+
+// ── Preview / playtest: real physics, real collisions ──────────────────────
+// Converts the authored {type,tx,ty,...} array into the same pixel-space object
+// shapes the procedural generator produces (via the existing spk/blk/orb/etc
+// factories), so collision and rendering code paths are identical to normal play.
+function editorBuildPreviewObjects(){
+  const objs=[];
+  edLevel.forEach(o=>{
+    if(o.type==='ground') return;
+    // oy = pixel Y of the placed tile's TOP edge, relative to the canvas
+    // ED_GROUND_Y row maps to GY (ground pixel line), each row up subtracts T
+    const oy = GY - (ED_GROUND_Y - o.ty) * T;
+    switch(o.type){
+      case 'block': {
+        const h = o.h||1;
+        // blk(ox,oy,w,h): oy is the block's TOP pixel edge, grows downward
+        // block is bottom-anchored in editor: top = oy-(h-1)*T
+        objs.push(blk(o.tx, oy-(h-1)*T, o.w||1, h));
+        break;
+      }
+      case 'spike':
+        // spk(ox,oy,n): spike bottom sits at oy (spike rect is oy-T to oy)
+        // so pass oy+T so bottom edge aligns with the bottom of the clicked tile
+        objs.push(...spk(o.tx, oy+T, 1));
+        break;
+      case 'cspike':
+        // cspk(ox,oy,n): ceiling spike top-left at oy, hangs downward
+        objs.push(...cspk(o.tx, oy, 1));
+        break;
+      case 'roller':
+        // rol(ox,oy): roller center-y = oy-T/2, so pass oy+T to center it in the tile
+        objs.push(rol(o.tx, oy+T));
+        break;
+      case 'laser':
+        // laser beam from near the placed tile up to the floor
+        objs.push(laser(o.tx, oy, GY));
+        break;
+      case 'mspike':
+        objs.push(mspk(o.tx, oy, o.amp||50));
+        break;
+      case 'mwall':
+        objs.push(mwall(o.tx, oy-((o.h||3)-1)*T, o.h||3, o.amp||1));
+        break;
+      case 'coin':
+        objs.push(coin(o.tx, oy + T/2));
+        break;
+      case 'orb':
+        objs.push(orb(o.tx, oy + T/2));
+        break;
+    }
+  });
+  return objs;
+}
+
+function editorPreview(){
+  if(edLevel.filter(o=>o.type!=='ground').length===0 && edLevel.filter(o=>o.type==='ground').length<3){
+    editorMsg('Place a few blocks before previewing.');
+    return;
+  }
+  customMode=false;partyMode=false;
+  editorPreviewMode=true;
+  hideOv('editor-ov');
+  document.getElementById('ed-preview-exit').style.display='block';
+
+  const objects=editorBuildPreviewObjects();
+  chunks=[{x:0, w:edLevelLen, objects}];
+  groundTiles=[];
+  // ground tiles come from authored 'ground' entries; any gap is simply a pit to fall into
+  edLevel.filter(o=>o.type==='ground').forEach(o=>{
+    groundTiles.push({type:'block', x:o.tx*T, y:GY, w:T, h:H-GY, _g:true});
+  });
+  chunkHead=edLevelLen; // prevents maybeGen from doing anything even if the guard is bypassed
+  rebuildObjCache();
+  editorPreviewLevelLenPx = edLevelLen*T;
+
+  const S=SKIN.size;
+  Object.assign(pl,{x:80,y:GY-S,vx:0,vy:0,angle:0,grounded:false,dashing:false,dashTimer:0,dashCD:0,justUsedOrb:false,dead:false,trail:[],particles:[]});
+  camX=0;score=0;distM=0;worldSpeed=BASE_SPD;shake=0;combo=0;comboTimer=0;totalCoins=0;
+  state='playing';SCREEN.className='';MAINMENU.classList.add('hide');
+  document.getElementById('hud-menu-btn').style.display='none';
+  document.getElementById('custom-hud').style.display='none';
+  hudTitle.textContent='HexaRun · Level Editor Preview';
+}
+window.editorPreview = editorPreview;
+
+function editorRetryPreview(){
+  SCREEN.className='';
+  editorPreview();
+}
+window.editorRetryPreview = editorRetryPreview;
+
+function editorPreviewWin(){
+  if(state!=='playing') return;
+  pl.vx=0;pl.vy=0;
+  state='dead'; // reuse the dead gate so input/update stop, without touching live stats
+  setTimeout(()=>{
+    SCREEN.innerHTML=`
+      <div style="font-size:26px;font-weight:900;color:#00ff88;margin-bottom:4px;text-shadow:0 0 14px #00ff88;">Level Complete!</div>
+      <div class="scr-sub">${Math.round(distM)} m · ${score} pts</div>
+      <button class="scr-btn" style="margin-top:14px;" onclick="editorRetryPreview()">↻ Retry</button>
+      <button class="scr-btn" onclick="editorExitPreview()">← Back to Editor</button>`;
+    SCREEN.className='show';
+  },150);
+}
+
+function editorExitPreview(){
+  editorPreviewMode=false;
+  SCREEN.className='';
+  document.getElementById('ed-preview-exit').style.display='none';
+  document.getElementById('hud-menu-btn').style.display='none';
+  state='menu';
+  showOv('editor-ov');
+  editorRender();
+  editorUpdateStatus();
+}
+window.editorExitPreview = editorExitPreview;
+
+// Escape key also backs out of an active preview, same as pause does for a normal run.
+window.addEventListener('keydown', e=>{
+  if(editorPreviewMode && e.code==='Escape'){
+    e.preventDefault();
+    editorExitPreview();
+  }
+});
+
+
+// ══════════════════════════════════════════════════════════════════════════════
 //  PARTY MODE — REAL MULTIPLAYER (Firebase Realtime Database sync)
+
 // ══════════════════════════════════════════════════════════════════════════════
 // Architecture: rooms + per-player race state live in Firebase Realtime Database
 // so anyone with the room code, on any device, anywhere, sees the same room/race
@@ -2106,6 +3314,8 @@ function pmBeginCountdownFlow(){
 
 function pmLaunchRace(){
   partyMode=true;
+  customMode=false;
+  document.getElementById('custom-hud').style.display='none';
   pmHasReportedFinish=false;
   pmResultsShown=false;
   pmWinRecorded=false;
@@ -2287,7 +3497,20 @@ function update(dt,t){
   if(state!=='playing')return;
   const S=SKIN.size;
   const tier=getTier(distM);
-  worldSpeed=BASE_SPD+tier.spdAdd+Math.min(distM/600,1.0);
+  const spdMul = customMode ? CUSTOM.speedMult : 1;
+  const gravMul = customMode ? CUSTOM.gravityMult : 1;
+  worldSpeed=(BASE_SPD+tier.spdAdd+Math.min(distM/600,1.0))*spdMul;
+
+  // Custom Mode timer: counts down regardless of lives; match ends at 0.
+  if(customMode && CUSTOM.timerOn){
+    customTimeLeft -= dt;
+    if(customTimeLeft<=0){
+      customTimeLeft=0;
+      updateCustomHud();
+      showCustomResults();
+      return;
+    }
+  }
 
   const jump=JKEYS.some(k=>K[k]);
   const dash=K['ShiftLeft']||K['ShiftRight'];
@@ -2295,26 +3518,31 @@ function update(dt,t){
   if(pl.dashCD>0)pl.dashCD-=dt;
   if(dash&&pl.dashCD<=0&&!pl.dashing){pl.dashing=true;pl.dashTimer=DASH_DUR;pl.dashCD=DASH_CD;pl.vy=0;}
 
+  const gNow = G*gravMul, jumpNow = JUMP*gravMul;
   if(pl.dashing){pl.dashTimer-=dt;pl.vx=worldSpeed*2.7;pl.vy=0;if(pl.dashTimer<=0){pl.dashing=false;pl.vx=worldSpeed*1.4;}}
-  else{pl.vx=worldSpeed;pl.vy+=G;pl.vy=Math.min(pl.vy,18);}
+  else{pl.vx=worldSpeed;pl.vy+=gNow;pl.vy=Math.min(pl.vy,18*gravMul);}
 
-  if(jump&&pl.grounded&&!pl.justUsedOrb){pl.vy=JUMP;pl.grounded=false;}
+  if(jump&&pl.grounded&&!pl.justUsedOrb){pl.vy=jumpNow;pl.grounded=false;}
   pl.justUsedOrb=false;
 
   const res=resolveBlocks();
   pl.x=res.x;pl.y=res.y;pl.vx=res.vx;pl.vy=res.vy;pl.grounded=res.grounded;
   if(res.hitWall){killPlayer();return;}
 
-  if(jump){for(const o of OBJ_ORB){if(aabb(pl.x,pl.y,S,S,o.x-18,o.y-18,36,36)){pl.vy=JUMP*1.1;pl.grounded=false;pl.justUsedOrb=true;break;}}}
+  if(jump){for(const o of OBJ_ORB){if(aabb(pl.x,pl.y,S,S,o.x-18,o.y-18,36,36)){pl.vy=jumpNow*1.1;pl.grounded=false;pl.justUsedOrb=true;break;}}}
   for(const s of OBJ_SPIKE){if(aabb(pl.x+4,pl.y+4,S-8,S-8,s.x,s.y,s.w??T,s.h??T)){killPlayer();return;}}
   for(const ro of OBJ_ROLLER){const dx=(pl.x+S/2)-ro.x,dy=(pl.y+S/2)-ro.y;if(Math.sqrt(dx*dx+dy*dy)<ro.r+S*.38){killPlayer();return;}}
   for(const la of OBJ_LASER){if(la._on&&Math.abs((pl.x+S/2)-la.x)<8&&pl.y+4<la.y2&&pl.y+S-4>la.y1){killPlayer();return;}}
   for(const ms of OBJ_MSPIKE){if(aabb(pl.x+4,pl.y+4,S-8,S-8,ms.x+4,ms.y+4,ms.w-8,ms.h-8)){killPlayer();return;}}
   for(const mw of OBJ_MWALL){if(aabb(pl.x+2,pl.y+2,S-4,S-4,mw.x,mw.y,mw.w,mw.h)){killPlayer();return;}}
-  for(const co of OBJ_COIN){if(co.collected)continue;if(aabb(pl.x,pl.y,S,S,co.x-co.r,co.y-co.r,co.r*2,co.r*2)){co.collected=true;totalCoins++;hexaCoins+=2;updateMenuStats();combo++;comboTimer=3000;spawnCoinPop(co.x-camX,co.y);}}
+  // Coin Enable/Disable: when off, coins are simply not collectible (still rendered as part of the layout for visual consistency).
+  if(!customMode || CUSTOM.coinsEnabled){
+    for(const co of OBJ_COIN){if(co.collected)continue;if(aabb(pl.x,pl.y,S,S,co.x-co.r,co.y-co.r,co.r*2,co.r*2)){co.collected=true;totalCoins++;hexaCoins+=2;updateMenuStats();combo++;comboTimer=3000;spawnCoinPop(co.x-camX,co.y);}}
+  }
 
   if(comboTimer>0){comboTimer-=dt;}else{combo=0;}
   if(pl.y>H+40){killPlayer();return;}
+  if(editorPreviewMode && pl.x>=editorPreviewLevelLenPx){ editorPreviewWin(); return; }
 
   if(pl.grounded){const sn=Math.PI/2;pl.angle=Math.round(pl.angle/sn)*sn;}
   else pl.angle+=pl.dashing?.20:.13;
@@ -2333,7 +3561,11 @@ function update(dt,t){
   maybeGen();prune();
 
   // HUD
-  if (partyMode) {
+  if (customMode) {
+      hudTitle.textContent = 'HexaRun · Custom Mode';
+      elDist.textContent = `${Math.round(distM)} m · ×${worldSpeed.toFixed(1)}`;
+      updateCustomHud();
+  } else if (partyMode) {
       hudTitle.textContent = 'HexaRun · Neon City · [PARTY MODE]';
       elDist.textContent = `${Math.round(distM)} m · ×${worldSpeed.toFixed(1)}`;
       pmTick(t); // push our live position/state to the room + refresh ghost standings
@@ -2454,6 +3686,8 @@ let trCoinState=[];      // per-step coin collected flags, reset each attempt
 let trCoinsThisRun=0;    // coins collected in the current training session (HUD display)
 
 function trainStart(){
+  customMode = false;
+  document.getElementById('custom-hud').style.display='none';
   trIdx=0;
   trCoinsThisRun=0;
   MAINMENU.classList.add('hide');
@@ -2931,7 +4165,7 @@ function trainRender(t){
 // ══════════════════════════════════════════════════════════════════════════════
 //  MENU SYSTEM
 // ══════════════════════════════════════════════════════════════════════════════
-function menuPlay(){partyMode = false;MAINMENU.classList.add('hide');startGame();}
+function menuPlay(){partyMode = false;customMode = false;document.getElementById('custom-hud').style.display='none';MAINMENU.classList.add('hide');startGame();}
 function menuPartyMode(){ pmOpenLobby(); }
 function menuControls(){showOv('ctrl-ov');}
 function menuStats(){
